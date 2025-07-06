@@ -1,0 +1,94 @@
+syntax = "proto3";
+package base_package;
+
+//python -m grpc_tools.protoc -I. --python_out=./base_package --grpc_python_out=./base_package ./data.proto
+//import sys
+//sys.path.append("F:\project\CoEdge_All\CoEdge_1210\grpc_utils\\base_package")
+
+service CoEdgeServer {   //定义服务,用在rpc传输中
+  /*
+   接收初始负载的接口
+   接收负载，返回状态码
+   */
+  rpc allocatedWorkload(sendWorkloadRequest) returns (sendWorkloadResponse){}
+  /*
+   获取填充请求的接口
+   接收填充请求，返回填充
+   */
+  rpc GetPadding(paddingrequest) returns (paddingresponse){}
+  /*
+   除工作设备接收全连接计算设备发送来的负载情求
+   获取负载请求的接口
+   接收负载请求，返回自身工作负载
+   */
+  rpc GetWorkload(workloadrequest) returns (workloadresponse){}
+  /*
+  主设备才需要，用来接收最后的计算结果
+   获取结果请求的接口
+   接收最终结果
+   */
+  rpc GetResult(resultrequest) returns (resultresponse){}
+}
+
+/*
+    工作负载分配数据结构
+    workload:工作负载，一维浮点型数组
+    in_up:工作负载在整张图片的上界
+    in_down:工作负载在整张图片的下界
+    wid:图片的宽度
+ */
+message sendWorkloadRequest {
+  bytes workload=1;
+  int32 ceiling=2;
+  int32 bottom=3;
+  int32 wid=4;
+  repeated int32 partition_result=5;
+  repeated int32 partition_index=6;
+}
+/*
+    工作负载返回数据结构
+    code:状态码，200OK
+ */
+message sendWorkloadResponse{
+  int32 code = 1;
+}
+
+/*
+    填充请求数据结构
+    layer:请求的填充层号
+    up_or_down:需要上半部分还是下半部分
+    p:填充高度
+ */
+message paddingrequest {
+  int32 partition=1;
+  int32 up_or_down=2;
+  int32 p=3;
+  bytes padding=4;
+}
+/*
+    返回填充的数据结构
+    padding:返回的填充数据
+ */
+message paddingresponse{
+  float wait_time = 2;
+  bytes padding = 1;
+}
+
+
+
+message workloadrequest {
+  int32 layer=1;
+}
+message workloadresponse{
+  bytes workload = 1;
+  int32 height = 2;
+}
+
+message resultrequest {
+  bytes result = 1;
+}
+message resultresponse{
+  int32 code = 1;
+}
+
+

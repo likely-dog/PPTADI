@@ -1,0 +1,7 @@
+python -m grpc_tools.protoc -I. --python_out=./base_package --grpc_python_out=./base_package ./data.proto
+
+
+import sys
+sys.path.append("F:\project\CoEdge_All\CoEdge_1223\grpc_utils\\base_package")
+
+sys.path.append("F:\project\CoEdge_All\CoEdge_1223\grpc_utils")
